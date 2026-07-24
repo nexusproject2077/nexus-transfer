@@ -1,0 +1,7 @@
+{
+  "name": "nexus-transfer",
+  "version": "1.0.0",
+  "scripts": {
+    "deploy": "firebase deploy"
+  }
+}
