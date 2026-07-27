@@ -13,16 +13,26 @@ générée à la volée par la fonction `downloadTransfer`.
 
 ## Architecture
 
-- **Front** (`public/index.html`) — page statique unique (HTML + module ES,
-  SDK Firebase chargé depuis le CDN). Auth anonyme, appel de la fonction
-  callable `createTransfer`, puis upload direct vers Storage. La configuration
-  Firebase est chargée à l'exécution depuis `/__/firebase/init.json` (servi
-  automatiquement par Firebase Hosting) : aucune clé n'est codée en dur.
+- **Front** (`public/`) — pages statiques (HTML + module ES, SDK Firebase
+  chargé depuis le CDN), design system partagé dans `app.css`, icônes SVG
+  maison. La configuration Firebase est chargée à l'exécution depuis
+  `/__/firebase/init.json` (servi par Firebase Hosting) : aucune clé n'est
+  codée en dur.
+  - `index.html` — envoi : glisser-déposer, expiration et nombre de
+    téléchargements configurables, optimisation d'image côté client (WebP
+    haute qualité), barre de progression avec pourcentage / débit / ETA.
+  - `download.html` — réception : aperçu du fichier (image, vidéo, audio,
+    PDF) avant téléchargement, taille, compte à rebours d'expiration,
+    téléchargements restants.
 - **Functions** (`functions/`) — Firebase Functions v2 (Node 24, TypeScript).
   - `createTransfer` (callable) — valide/borne les paramètres, crée le
     document Firestore, renvoie le lien et le chemin de stockage.
+  - `getTransferInfo` (callable) — métadonnées publiques + URL signée de
+    prévisualisation ; n'incrémente pas le compteur.
   - `downloadTransfer` (HTTP) — vérifie expiration et quota, incrémente le
-    compteur, redirige vers une URL signée v4.
+    compteur, redirige vers une URL signée v4 en pièce jointe.
+- **Routage** (`firebase.json`) — `/d/<id>` sert la page de téléchargement
+  stylée ; `/dl/<id>` sert le fichier lui-même (fonction).
 - **Règles** — Firestore et Storage sont entièrement fermés côté client
   (`firestore.rules`, `storage.rules`), sauf l'écriture sur `uploads/`
   réservée aux sessions authentifiées.
