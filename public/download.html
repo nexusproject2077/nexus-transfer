@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Télécharger — Nexus Transfer</title>
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%231ee6a4'/><path d='M12 6l5 6h-3v6h-4v-6H7z' fill='%2307070d'/></svg>">
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#1ee6a4"/><stop offset="1" stop-color="#12b6ff"/>
+      </linearGradient>
+    </defs>
+    <symbol id="i-logo" viewBox="0 0 24 24">
+      <rect x="1.5" y="1.5" width="21" height="21" rx="6.5" fill="url(#g)"/>
+      <path d="M12 6l5.5 6.5h-3.4V18H9.9v-5.5H6.5z" fill="#07070d"/>
+    </symbol>
+    <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2.5"/><circle cx="9" cy="9.5" r="1.6"/><path d="M5 16l4-4 3.5 3.5L16 12l3 3.5"/></symbol>
+    <symbol id="i-video" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="14" height="14" rx="2.5"/><path d="M17 10l4-2.5v9L17 14z"/></symbol>
+    <symbol id="i-audio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l10-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></symbol>
+    <symbol id="i-pdf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></symbol>
+    <symbol id="i-archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M12 4v3m0 2v2m0 2v2m0 2h.01"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4"/><path d="M5 19h14"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9.5 16.5H2.5z"/><path d="M12 9v5m0 3h.01"/></symbol>
+    <symbol id="i-ban" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M6 6l12 12"/></symbol>
+    <symbol id="i-clock-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l2 1.3M5.5 5.5l13 13"/></symbol>
+    <symbol id="i-search-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4M8.5 11h5"/></symbol>
+  </svg>
+
+  <main class="shell">
+    <div class="brand">
+      <svg class="logo"><use href="#i-logo"/></svg>
+      <h1>Nexus Transfer</h1>
+    </div>
+
+    <div class="card" id="card">
+      <!-- Squelette de chargement -->
+      <div id="loading">
+        <div class="skeleton" style="height:150px;margin-bottom:22px"></div>
+        <div class="skeleton" style="height:22px;width:60%;margin:0 auto 18px"></div>
+        <div class="stats">
+          <div class="skeleton stat" style="height:64px"></div>
+          <div class="skeleton stat" style="height:64px"></div>
+        </div>
+        <div class="skeleton" style="height:50px;border-radius:14px"></div>
+      </div>
+
+      <!-- Fichier disponible -->
+      <div id="ready" class="hidden">
+        <div class="preview" id="preview"></div>
+        <div class="dl-name" id="dlName">—</div>
+        <div class="stats">
+          <div class="stat"><div class="v" id="dlSize">—</div><div class="k">Taille</div></div>
+          <div class="stat"><div class="v" id="dlExpiry">—</div><div class="k">Expire dans</div></div>
+          <div class="stat"><div class="v" id="dlLeft">—</div><div class="k">Téléch. restants</div></div>
+        </div>
+        <a class="btn" id="dlBtn" href="#"><svg><use href="#i-download"/></svg><span>Télécharger</span></a>
+      </div>
+
+      <!-- États d'indisponibilité -->
+      <div id="state" class="center-state hidden">
+        <svg class="icon" id="stateIcon"><use href="#i-ban"/></svg>
+        <h2 id="stateTitle">—</h2>
+        <p id="stateText">—</p>
+        <a class="btn ghost mt" href="/" style="max-width:220px;margin-left:auto;margin-right:auto">Envoyer un fichier</a>
+      </div>
+    </div>
+
+    <p class="foot"><a href="/">Créer votre propre transfert →</a></p>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js';
+
+    const $ = (id) => document.getElementById(id);
+    const id = location.pathname.split('/').filter(Boolean).pop() || '';
+
+    function humanSize(b) {
+      if (!b && b !== 0) return '—';
+      const u = ['o', 'Ko', 'Mo', 'Go', 'To']; let i = 0; let n = b;
+      while (n >= 1024 && i < u.length - 1) { n /= 1024; i++; }
+      return `${n.toFixed(n < 10 && i > 0 ? 1 : 0)} ${u[i]}`;
+    }
+    function untilHuman(iso) {
+      const ms = new Date(iso).getTime() - Date.now();
+      if (ms <= 0) return 'expiré';
+      const d = Math.floor(ms / 86400000), h = Math.floor((ms % 86400000) / 3600000), m = Math.floor((ms % 3600000) / 60000);
+      if (d >= 1) return `${d} j ${h} h`;
+      if (h >= 1) return `${h} h ${m} min`;
+      return `${m} min`;
+    }
+    function iconFor(type = '', name = '') {
+      const t = type.toLowerCase(); const ext = (name.split('.').pop() || '').toLowerCase();
+      if (t.startsWith('image/')) return 'i-image';
+      if (t.startsWith('video/')) return 'i-video';
+      if (t.startsWith('audio/')) return 'i-audio';
+      if (t === 'application/pdf' || ext === 'pdf') return 'i-pdf';
+      if (/zip|rar|7z|tar|gz|compressed/.test(t) || /^(zip|rar|7z|tar|gz)$/.test(ext)) return 'i-archive';
+      return 'i-file';
+    }
+
+    function renderPreview(info) {
+      const box = $('preview'); const t = (info.contentType || '').toLowerCase();
+      if (info.previewUrl && t.startsWith('image/')) { box.innerHTML = `<img alt="${info.fileName}" src="${info.previewUrl}">`; return; }
+      if (info.previewUrl && t.startsWith('video/')) { box.innerHTML = `<video controls preload="metadata" src="${info.previewUrl}"></video>`; return; }
+      if (info.previewUrl && t.startsWith('audio/')) { box.innerHTML = `<div class="filetype"><svg><use href="#i-audio"/></svg><audio controls style="margin-top:16px;width:100%" src="${info.previewUrl}"></audio></div>`; return; }
+      if (info.previewUrl && (t === 'application/pdf')) { box.innerHTML = `<iframe src="${info.previewUrl}" style="width:100%;height:340px;border:0"></iframe>`; return; }
+      const ext = (info.fileName.split('.').pop() || 'fichier').toLowerCase();
+      box.innerHTML = `<div class="filetype"><svg><use href="#${iconFor(info.contentType, info.fileName)}"/></svg><div class="ext">${ext}</div></div>`;
+    }
+
+    function showState(icon, title, text) {
+      $('loading').classList.add('hidden'); $('ready').classList.add('hidden');
+      $('stateIcon').querySelector('use').setAttribute('href', '#' + icon);
+      $('stateTitle').textContent = title; $('stateText').textContent = text;
+      $('state').classList.remove('hidden');
+    }
+
+    (async () => {
+      if (!id) return showState('i-search-off', 'Lien invalide', "Ce lien de transfert n'est pas valide.");
+      try {
+        const config = await (await fetch('/__/firebase/init.json')).json();
+        const functions = getFunctions(initializeApp(config), 'us-central1');
+        const { data: info } = await httpsCallable(functions, 'getTransferInfo')({ id });
+
+        if (info.reason === 'not_found') return showState('i-search-off', 'Transfert introuvable', "Ce lien n'existe pas ou a été supprimé.");
+        if (info.reason === 'expired') return showState('i-clock-off', 'Lien expiré', 'Ce transfert a dépassé sa date de validité.');
+        if (info.reason === 'exhausted') return showState('i-ban', 'Limite atteinte', 'Ce transfert a atteint son nombre maximum de téléchargements.');
+        if (info.reason === 'pending') return showState('i-clock', 'Envoi en cours', "Le fichier n'a pas encore fini d'être téléversé. Réessayez dans un instant.");
+
+        renderPreview(info);
+        $('dlName').textContent = info.fileName;
+        $('dlSize').textContent = humanSize(info.size);
+        $('dlExpiry').textContent = untilHuman(info.expiresAt);
+        const left = Math.max(0, (info.maxDownloads ?? 0) - (info.downloadCount ?? 0));
+        $('dlLeft').textContent = info.maxDownloads >= 1000 ? '∞' : left;
+        $('dlBtn').href = '/dl/' + encodeURIComponent(id);
+        $('loading').classList.add('hidden'); $('ready').classList.remove('hidden');
+      } catch (e) {
+        console.error(e);
+        showState('i-alert', 'Une erreur est survenue', "Impossible de charger ce transfert pour le moment.");
+      }
+    })();
+  </script>
+</body>
+</html>

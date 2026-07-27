@@ -3,80 +3,155 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nexus Transfer</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, sans-serif;
-      background: linear-gradient(135deg, #0f0f23, #1a1a3d);
-      color: white;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .container {
-      text-align: center;
-      background: rgba(255,255,255,0.05);
-      padding: 50px 40px;
-      border-radius: 24px;
-      backdrop-filter: blur(10px);
-      max-width: 480px;
-      width: 90%;
-    }
-    h1 { color: #00ff9f; margin: 0 0 10px; font-size: 2.2rem; }
-    p { opacity: 0.8; margin-bottom: 30px; }
-    input[type="file"] { margin: 20px 0; color: white; }
-    button {
-      background: #00ff9f;
-      color: #000;
-      border: none;
-      padding: 14px 32px;
-      font-size: 1.1rem;
-      border-radius: 50px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    button:hover { background: #00cc7a; }
-    .link {
-      margin-top: 30px;
-      word-break: break-all;
-      background: rgba(0,0,0,0.3);
-      padding: 16px;
-      border-radius: 12px;
-      display: none;
-    }
-    .progress {
-      margin-top: 20px;
-      height: 8px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 4px;
-      overflow: hidden;
-      display: none;
-    }
-    .progress-bar {
-      height: 100%;
-      background: #00ff9f;
-      width: 0%;
-      transition: width 0.3s;
-    }
-  </style>
+  <title>Nexus Transfer — Transfert de fichiers rapide et temporaire</title>
+  <meta name="description" content="Envoyez vos fichiers en un lien, chiffrés et éphémères.">
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%231ee6a4'/><path d='M12 6l5 6h-3v6h-4v-6H7z' fill='%2307070d'/></svg>">
+  <link rel="stylesheet" href="/app.css">
 </head>
 <body>
-  <div class="container">
-    <h1>🌌 Nexus Transfer</h1>
-    <p>Transférez vos fichiers rapidement et temporairement</p>
 
-    <input type="file" id="fileInput">
-    <br>
-    <button onclick="upload()">Envoyer le fichier</button>
+  <!-- Sprite d'icônes SVG (maison, sans emoji) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#1ee6a4"/><stop offset="1" stop-color="#12b6ff"/>
+      </linearGradient>
+    </defs>
+    <symbol id="i-logo" viewBox="0 0 24 24">
+      <rect x="1.5" y="1.5" width="21" height="21" rx="6.5" fill="url(#g)"/>
+      <path d="M12 6l5.5 6.5h-3.4V18H9.9v-5.5H6.5z" fill="#07070d"/>
+    </symbol>
+    <symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M7 18a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17.5 9.5 3.75 3.75 0 0 1 17 18z"/>
+      <path d="M12 15V9m0 0l-2.3 2.3M12 9l2.3 2.3"/>
+    </symbol>
+    <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>
+    </symbol>
+    <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="4" width="16" height="16" rx="2.5"/><circle cx="9" cy="9.5" r="1.6"/><path d="M5 16l4-4 3.5 3.5L16 12l3 3.5"/>
+    </symbol>
+    <symbol id="i-video" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="5" width="14" height="14" rx="2.5"/><path d="M17 10l4-2.5v9L17 14z"/>
+    </symbol>
+    <symbol id="i-audio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 18V6l10-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/>
+    </symbol>
+    <symbol id="i-pdf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M8.5 17v-3h1a1 1 0 0 1 0 2h-1m4 1v-3h1.4m-1.4 1.5h1"/>
+    </symbol>
+    <symbol id="i-archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M12 4v3m0 2v2m0 2v2m0 2h.01"/>
+    </symbol>
+    <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 4v11m0 0l-4-4m4 4l4-4"/><path d="M5 19h14"/>
+    </symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 12.5l4.5 4.5L19 7"/>
+    </symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>
+    </symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M7 7l10 10M17 7L7 17"/>
+    </symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3l9.5 16.5H2.5z"/><path d="M12 9v5m0 3h.01"/>
+    </symbol>
+    <symbol id="i-ban" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="8.5"/><path d="M6 6l12 12"/>
+    </symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 4l1.6 4.4L18 10l-4.4 1.6L12 16l-1.6-4.4L6 10l4.4-1.6z"/>
+    </symbol>
+    <symbol id="i-download-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M7 17a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17.5 8.5 3.75 3.75 0 0 1 17.4 16"/><path d="M12 12v7m0 0l-2.5-2.5M12 19l2.5-2.5"/>
+    </symbol>
+  </svg>
 
-    <div class="progress" id="progress">
-      <div class="progress-bar" id="progressBar"></div>
+  <main class="shell">
+    <div class="brand">
+      <svg class="logo"><use href="#i-logo"/></svg>
+      <h1>Nexus Transfer</h1>
     </div>
 
-    <div class="link" id="result"></div>
-  </div>
+    <div class="card">
+      <p class="tagline">Envoyez vos fichiers en un lien — rapide, chiffré, éphémère.</p>
+
+      <!-- Zone de dépôt -->
+      <label class="drop" id="drop">
+        <input type="file" id="fileInput">
+        <svg class="ico"><use href="#i-cloud"/></svg>
+        <div class="big">Glissez un fichier ici</div>
+        <div class="small">ou cliquez pour parcourir — jusqu'à 5 Go</div>
+      </label>
+
+      <!-- Vignette du fichier sélectionné -->
+      <div id="fileRow" class="file-row hidden" style="margin-top:16px">
+        <div class="thumb" id="thumb"><svg><use href="#i-file"/></svg></div>
+        <div class="meta">
+          <div class="name" id="fileName">—</div>
+          <div class="sub" id="fileSub">—</div>
+        </div>
+        <button class="clear" id="clearBtn" type="button" aria-label="Retirer"><svg><use href="#i-x"/></svg></button>
+      </div>
+
+      <!-- Options -->
+      <div class="options" id="options" style="display:none">
+        <div class="field">
+          <label>Expiration du lien</label>
+          <div class="seg" id="expiry" role="group">
+            <button type="button" data-days="1">1 jour</button>
+            <button type="button" data-days="7" aria-pressed="true">7 jours</button>
+            <button type="button" data-days="30">30 jours</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Téléchargements maximum</label>
+          <div class="seg" id="maxdl" role="group">
+            <button type="button" data-max="1">1</button>
+            <button type="button" data-max="10" aria-pressed="true">10</button>
+            <button type="button" data-max="50">50</button>
+            <button type="button" data-max="1000">Illimité</button>
+          </div>
+        </div>
+        <label class="toggle" id="compressToggle" style="display:none">
+          <svg style="width:20px;height:20px;color:var(--accent)"><use href="#i-spark"/></svg>
+          <span class="txt"><b>Optimiser l'image</b><span id="compressHint">Compression haute qualité (WebP)</span></span>
+          <span class="switch"><input type="checkbox" id="compress" checked><span class="track"></span></span>
+        </label>
+      </div>
+
+      <button class="btn mt" id="sendBtn" disabled>
+        <svg><use href="#i-download-cloud"/></svg><span>Envoyer le fichier</span>
+      </button>
+
+      <!-- Progression -->
+      <div class="progress" id="progress">
+        <div class="head"><span id="progressLabel">Préparation…</span><span class="pct" id="pct">0%</span></div>
+        <div class="bar"><div class="fill" id="fill"></div></div>
+        <div class="sub" id="progressSub"></div>
+      </div>
+
+      <!-- Résultat -->
+      <div class="result" id="result">
+        <div class="ok"><svg class="check-anim"><use href="#i-check"/></svg><span>Transfert prêt</span></div>
+        <div class="link-box">
+          <span class="url" id="resultUrl"></span>
+          <button class="copy" id="copyBtn" type="button"><svg><use href="#i-copy"/></svg><span>Copier</span></button>
+        </div>
+        <button class="btn ghost mt" id="againBtn" type="button">Nouveau transfert</button>
+      </div>
+
+      <div id="error" class="alert err hidden"><svg><use href="#i-alert"/></svg><span id="errorMsg"></span></div>
+    </div>
+
+    <p class="foot">Les fichiers sont supprimés à l'expiration. <a href="/">nexus-transfer</a></p>
+  </main>
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
@@ -84,72 +159,170 @@
     import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js';
     import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
-    // La configuration Firebase (dont l'apiKey) est servie automatiquement
-    // par Firebase Hosting à l'URL réservée /__/firebase/init.json. Rien n'est
-    // codé en dur : aucune clé à committer, aucun secret à corrompre.
+    // Config servie par Firebase Hosting — aucune clé en dur.
     const ready = (async () => {
       const config = await (await fetch('/__/firebase/init.json')).json();
       const app = initializeApp(config);
-      return {
-        storage: getStorage(app),
-        functions: getFunctions(app, 'us-central1'),
-        auth: getAuth(app),
-      };
+      return { storage: getStorage(app), functions: getFunctions(app, 'us-central1'), auth: getAuth(app) };
     })();
 
-    window.upload = async function() {
-      const file = document.getElementById('fileInput').files[0];
-      if (!file) {
-        alert("Choisis un fichier");
-        return;
-      }
+    const $ = (id) => document.getElementById(id);
+    const state = { file: null, days: 7, max: 10 };
 
-      document.getElementById('progress').style.display = 'block';
-      document.getElementById('result').style.display = 'none';
-      document.getElementById('progressBar').style.width = '0%';
+    // --- Icône par type de fichier ---
+    function iconFor(type = '', name = '') {
+      const t = type.toLowerCase(); const ext = (name.split('.').pop() || '').toLowerCase();
+      if (t.startsWith('image/')) return 'i-image';
+      if (t.startsWith('video/')) return 'i-video';
+      if (t.startsWith('audio/')) return 'i-audio';
+      if (t === 'application/pdf' || ext === 'pdf') return 'i-pdf';
+      if (/zip|rar|7z|tar|gz|compressed/.test(t) || /^(zip|rar|7z|tar|gz)$/.test(ext)) return 'i-archive';
+      return 'i-file';
+    }
+    function humanSize(b) {
+      if (!b && b !== 0) return '—';
+      const u = ['o', 'Ko', 'Mo', 'Go', 'To']; let i = 0; let n = b;
+      while (n >= 1024 && i < u.length - 1) { n /= 1024; i++; }
+      return `${n.toFixed(n < 10 && i > 0 ? 1 : 0)} ${u[i]}`;
+    }
+
+    // --- Compression image côté client (visuellement sans perte) ---
+    async function optimizeImage(file, quality = 0.92) {
+      if (!file.type.startsWith('image/') || /gif|svg/.test(file.type)) return { file, saved: 0 };
+      try {
+        const bitmap = await createImageBitmap(file);
+        const maxDim = 4096; // on reste en HD, on ne réduit qu'au-delà
+        const scale = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height));
+        const w = Math.round(bitmap.width * scale), h = Math.round(bitmap.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(bitmap, 0, 0, w, h);
+        const blob = await new Promise((res) => canvas.toBlob(res, 'image/webp', quality));
+        if (blob && blob.size < file.size) {
+          const name = file.name.replace(/\.[^.]+$/, '') + '.webp';
+          return { file: new File([blob], name, { type: 'image/webp' }), saved: file.size - blob.size };
+        }
+      } catch (e) { console.warn('Compression ignorée', e); }
+      return { file, saved: 0 };
+    }
+
+    // --- Sélection de fichier ---
+    function setFile(file) {
+      state.file = file || null;
+      if (!file) { $('fileRow').classList.add('hidden'); $('options').style.display = 'none'; $('sendBtn').disabled = true; $('drop').style.display = ''; return; }
+      $('drop').style.display = 'none';
+      $('fileRow').classList.remove('hidden');
+      $('options').style.display = 'grid';
+      $('sendBtn').disabled = false;
+      $('fileName').textContent = file.name;
+      $('fileSub').textContent = `${humanSize(file.size)} · ${file.type || 'type inconnu'}`;
+      const isImg = file.type.startsWith('image/') && !/gif|svg/.test(file.type);
+      $('compressToggle').style.display = isImg ? 'flex' : 'none';
+      const thumb = $('thumb');
+      if (isImg) {
+        const url = URL.createObjectURL(file);
+        thumb.innerHTML = `<img alt="" src="${url}">`;
+      } else {
+        thumb.innerHTML = `<svg><use href="#${iconFor(file.type, file.name)}"/></svg>`;
+      }
+    }
+
+    $('fileInput').addEventListener('change', (e) => setFile(e.target.files[0]));
+    $('clearBtn').addEventListener('click', (e) => { e.preventDefault(); $('fileInput').value = ''; setFile(null); });
+
+    // Drag & drop
+    const drop = $('drop');
+    ['dragenter', 'dragover'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('drag'); }));
+    ['dragleave', 'drop'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('drag'); }));
+    drop.addEventListener('drop', (e) => { const f = e.dataTransfer.files[0]; if (f) { $('fileInput').files = e.dataTransfer.files; setFile(f); } });
+
+    // Segments (expiration / max)
+    function wireSeg(id, key, attr, cast) {
+      $(id).addEventListener('click', (e) => {
+        const btn = e.target.closest('button'); if (!btn) return;
+        [...e.currentTarget.children].forEach((b) => b.setAttribute('aria-pressed', b === btn));
+        state[key] = cast(btn.dataset[attr]);
+      });
+    }
+    wireSeg('expiry', 'days', 'days', Number);
+    wireSeg('maxdl', 'max', 'max', Number);
+
+    // --- Envoi ---
+    $('sendBtn').addEventListener('click', upload);
+    async function upload() {
+      if (!state.file) return;
+      hideError();
+      $('sendBtn').disabled = true;
+      $('progress').classList.add('show');
+      setProgress(0, 'Préparation…', '');
 
       try {
         const { storage, functions, auth } = await ready;
+        if (!auth.currentUser) await signInAnonymously(auth);
 
-        // Les règles Storage exigent une session authentifiée : l'auth
-        // anonyme suffit et reste transparente pour l'utilisateur.
-        if (!auth.currentUser) {
-          await signInAnonymously(auth);
+        // Optimisation image optionnelle
+        let file = state.file;
+        if ($('compressToggle').style.display !== 'none' && $('compress').checked) {
+          setProgress(0, 'Optimisation…', '');
+          const { file: opt, saved } = await optimizeImage(file);
+          file = opt;
+          if (saved > 0) $('progressSub').textContent = `Image optimisée · ${humanSize(saved)} économisés`;
         }
 
-        // Créer l'entrée via Cloud Function (renvoie le chemin de stockage).
         const createTransfer = httpsCallable(functions, 'createTransfer');
-        const result = await createTransfer({ fileName: file.name });
+        const { data } = await createTransfer({
+          fileName: file.name, size: file.size, contentType: file.type,
+          expiresDays: state.days, maxDownloads: state.max,
+        });
 
-        // On uploade sur le chemin calculé par le serveur (nom assaini),
-        // pas sur un chemin reconstruit côté client.
-        const storageRef = ref(storage, result.data.storagePath);
-        const uploadTask = uploadBytesResumable(storageRef, file);
-
-        uploadTask.on('state_changed',
-          (snapshot) => {
-            const percent = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-            document.getElementById('progressBar').style.width = percent + '%';
+        const task = uploadBytesResumable(ref(storage, data.storagePath), file);
+        const started = Date.now();
+        task.on('state_changed',
+          (snap) => {
+            const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+            const secs = (Date.now() - started) / 1000;
+            const speed = secs > 0 ? snap.bytesTransferred / secs : 0;
+            const remain = speed > 0 ? (snap.totalBytes - snap.bytesTransferred) / speed : 0;
+            setProgress(pct, 'Envoi en cours',
+              `${humanSize(snap.bytesTransferred)} / ${humanSize(snap.totalBytes)} · ${humanSize(speed)}/s` +
+              (remain > 1 ? ` · ${Math.ceil(remain)} s restantes` : ''));
           },
-          (error) => {
-            console.error(error);
-            alert("Erreur d'upload : " + error.message);
-          },
+          (err) => { console.error(err); showError("L'envoi a échoué : " + err.message); $('progress').classList.remove('show'); $('sendBtn').disabled = false; },
           () => {
-            // La lecture directe est interdite par les règles : on partage le
-            // lien qui passe par la fonction downloadTransfer (URL signée).
-            document.getElementById('result').style.display = 'block';
-            document.getElementById('result').innerHTML = `
-              ✅ Upload terminé !<br><br>
-              <a href="${result.data.link}" target="_blank" style="color:#00ff9f">${result.data.link}</a>
-            `;
+            setProgress(100, 'Terminé', '');
+            $('resultUrl').textContent = data.link;
+            $('copyBtn').dataset.link = data.link;
+            setTimeout(() => { $('progress').classList.remove('show'); $('result').classList.add('show'); }, 350);
           }
         );
       } catch (err) {
         console.error(err);
-        alert("Erreur : " + err.message);
+        showError('Erreur : ' + (err.message || err));
+        $('progress').classList.remove('show');
+        $('sendBtn').disabled = false;
       }
     }
+
+    function setProgress(pct, label, sub) {
+      $('fill').style.width = pct + '%'; $('pct').textContent = pct + '%';
+      $('progressLabel').textContent = label; if (sub !== undefined) $('progressSub').textContent = sub;
+    }
+    function showError(msg) { $('errorMsg').textContent = msg; $('error').classList.remove('hidden'); }
+    function hideError() { $('error').classList.add('hidden'); }
+
+    // Copier
+    $('copyBtn').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText($('copyBtn').dataset.link);
+        const b = $('copyBtn'); b.classList.add('done');
+        b.querySelector('span').textContent = 'Copié'; b.querySelector('use').setAttribute('href', '#i-check');
+        setTimeout(() => { b.classList.remove('done'); b.querySelector('span').textContent = 'Copier'; b.querySelector('use').setAttribute('href', '#i-copy'); }, 1800);
+      } catch (e) { console.warn(e); }
+    });
+
+    $('againBtn').addEventListener('click', () => {
+      $('result').classList.remove('show'); $('fileInput').value = ''; setFile(null); $('sendBtn').disabled = false;
+    });
   </script>
 </body>
 </html>
