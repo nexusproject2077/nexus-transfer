@@ -1,8 +1,15 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /transfers/{docId} {
-      allow read, write: if request.time < resource.data.expiresAt || request.auth != null;
+    // Les documents de transfert ne sont manipulés que par l'Admin SDK
+    // depuis les Cloud Functions, jamais directement par le client.
+    match /transfers/{transferId} {
+      allow read, write: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
