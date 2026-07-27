@@ -3,65 +3,153 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nexus Transfer - Transfert de fichiers sécurisé</title>
+  <title>Nexus Transfer</title>
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       margin: 0;
-      padding: 0;
+      font-family: system-ui, -apple-system, sans-serif;
       background: linear-gradient(135deg, #0f0f23, #1a1a3d);
-      color: #fff;
-      text-align: center;
+      color: white;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
     }
     .container {
-      max-width: 600px;
-      padding: 40px;
+      text-align: center;
       background: rgba(255,255,255,0.05);
-      border-radius: 20px;
+      padding: 50px 40px;
+      border-radius: 24px;
       backdrop-filter: blur(10px);
+      max-width: 480px;
+      width: 90%;
     }
-    h1 {
-      color: #00ff9f;
-      margin-bottom: 10px;
-    }
-    input[type="file"] {
-      margin: 20px 0;
-      padding: 10px;
-    }
+    h1 { color: #00ff9f; margin: 0 0 10px; font-size: 2.2rem; }
+    p { opacity: 0.8; margin-bottom: 30px; }
+    input[type="file"] { margin: 20px 0; color: white; }
     button {
       background: #00ff9f;
       color: #000;
       border: none;
-      padding: 15px 30px;
-      font-size: 18px;
+      padding: 14px 32px;
+      font-size: 1.1rem;
       border-radius: 50px;
       cursor: pointer;
-      margin: 20px;
+      font-weight: 600;
     }
-    button:hover {
-      background: #00cc7a;
-    }
+    button:hover { background: #00cc7a; }
     .link {
       margin-top: 30px;
       word-break: break-all;
       background: rgba(0,0,0,0.3);
-      padding: 15px;
-      border-radius: 10px;
+      padding: 16px;
+      border-radius: 12px;
+      display: none;
+    }
+    .progress {
+      margin-top: 20px;
+      height: 8px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      display: none;
+    }
+    .progress-bar {
+      height: 100%;
+      background: #00ff9f;
+      width: 0%;
+      transition: width 0.3s;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>🌌 Nexus Transfer</h1>
-    <p>Transférez des fichiers jusqu'à plusieurs Go - Gratuit & Temporaire</p>
-    
-    <div id="app"></div>
+    <p>Transférez vos fichiers rapidement et temporairement</p>
+
+    <input type="file" id="fileInput">
+    <br>
+    <button onclick="upload()">Envoyer le fichier</button>
+
+    <div class="progress" id="progress">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="link" id="result"></div>
   </div>
 
-  <script type="module" src="/src/index.js"></script>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import { getStorage, ref, uploadBytesResumable } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js';
+    import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js';
+    import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+    // La configuration Firebase (dont l'apiKey) est servie automatiquement
+    // par Firebase Hosting à l'URL réservée /__/firebase/init.json. Rien n'est
+    // codé en dur : aucune clé à committer, aucun secret à corrompre.
+    const ready = (async () => {
+      const config = await (await fetch('/__/firebase/init.json')).json();
+      const app = initializeApp(config);
+      return {
+        storage: getStorage(app),
+        functions: getFunctions(app, 'us-central1'),
+        auth: getAuth(app),
+      };
+    })();
+
+    window.upload = async function() {
+      const file = document.getElementById('fileInput').files[0];
+      if (!file) {
+        alert("Choisis un fichier");
+        return;
+      }
+
+      document.getElementById('progress').style.display = 'block';
+      document.getElementById('result').style.display = 'none';
+      document.getElementById('progressBar').style.width = '0%';
+
+      try {
+        const { storage, functions, auth } = await ready;
+
+        // Les règles Storage exigent une session authentifiée : l'auth
+        // anonyme suffit et reste transparente pour l'utilisateur.
+        if (!auth.currentUser) {
+          await signInAnonymously(auth);
+        }
+
+        // Créer l'entrée via Cloud Function (renvoie le chemin de stockage).
+        const createTransfer = httpsCallable(functions, 'createTransfer');
+        const result = await createTransfer({ fileName: file.name });
+
+        // On uploade sur le chemin calculé par le serveur (nom assaini),
+        // pas sur un chemin reconstruit côté client.
+        const storageRef = ref(storage, result.data.storagePath);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on('state_changed',
+          (snapshot) => {
+            const percent = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+            document.getElementById('progressBar').style.width = percent + '%';
+          },
+          (error) => {
+            console.error(error);
+            alert("Erreur d'upload : " + error.message);
+          },
+          () => {
+            // La lecture directe est interdite par les règles : on partage le
+            // lien qui passe par la fonction downloadTransfer (URL signée).
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('result').innerHTML = `
+              ✅ Upload terminé !<br><br>
+              <a href="${result.data.link}" target="_blank" style="color:#00ff9f">${result.data.link}</a>
+            `;
+          }
+        );
+      } catch (err) {
+        console.error(err);
+        alert("Erreur : " + err.message);
+      }
+    }
+  </script>
 </body>
 </html>
