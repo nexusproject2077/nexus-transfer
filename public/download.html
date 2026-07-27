@@ -12,14 +12,9 @@
 
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
-      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="#1ee6a4"/><stop offset="1" stop-color="#12b6ff"/>
-      </linearGradient>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1ee6a4"/><stop offset="1" stop-color="#12b6ff"/></linearGradient>
     </defs>
-    <symbol id="i-logo" viewBox="0 0 24 24">
-      <rect x="1.5" y="1.5" width="21" height="21" rx="6.5" fill="url(#g)"/>
-      <path d="M12 6l5.5 6.5h-3.4V18H9.9v-5.5H6.5z" fill="#07070d"/>
-    </symbol>
+    <symbol id="i-logo" viewBox="0 0 24 24"><rect x="1.5" y="1.5" width="21" height="21" rx="6.5" fill="url(#g)"/><path d="M12 6l5.5 6.5h-3.4V18H9.9v-5.5H6.5z" fill="#07070d"/></symbol>
     <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></symbol>
     <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2.5"/><circle cx="9" cy="9.5" r="1.6"/><path d="M5 16l4-4 3.5 3.5L16 12l3 3.5"/></symbol>
     <symbol id="i-video" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="14" height="14" rx="2.5"/><path d="M17 10l4-2.5v9L17 14z"/></symbol>
@@ -35,36 +30,18 @@
   </svg>
 
   <main class="shell">
-    <div class="brand">
-      <svg class="logo"><use href="#i-logo"/></svg>
-      <h1>Nexus Transfer</h1>
-    </div>
+    <div class="brand"><svg class="logo"><use href="#i-logo"/></svg><h1>Nexus Transfer</h1></div>
 
-    <div class="card" id="card">
-      <!-- Squelette de chargement -->
+    <div class="card">
       <div id="loading">
         <div class="skeleton" style="height:150px;margin-bottom:22px"></div>
         <div class="skeleton" style="height:22px;width:60%;margin:0 auto 18px"></div>
-        <div class="stats">
-          <div class="skeleton stat" style="height:64px"></div>
-          <div class="skeleton stat" style="height:64px"></div>
-        </div>
+        <div class="stats"><div class="skeleton stat" style="height:64px"></div><div class="skeleton stat" style="height:64px"></div></div>
         <div class="skeleton" style="height:50px;border-radius:14px"></div>
       </div>
 
-      <!-- Fichier disponible -->
-      <div id="ready" class="hidden">
-        <div class="preview" id="preview"></div>
-        <div class="dl-name" id="dlName">—</div>
-        <div class="stats">
-          <div class="stat"><div class="v" id="dlSize">—</div><div class="k">Taille</div></div>
-          <div class="stat"><div class="v" id="dlExpiry">—</div><div class="k">Expire dans</div></div>
-          <div class="stat"><div class="v" id="dlLeft">—</div><div class="k">Téléch. restants</div></div>
-        </div>
-        <a class="btn" id="dlBtn" href="#"><svg><use href="#i-download"/></svg><span>Télécharger</span></a>
-      </div>
+      <div id="ready" class="hidden"></div>
 
-      <!-- États d'indisponibilité -->
       <div id="state" class="center-state hidden">
         <svg class="icon" id="stateIcon"><use href="#i-ban"/></svg>
         <h2 id="stateTitle">—</h2>
@@ -90,12 +67,9 @@
       return `${n.toFixed(n < 10 && i > 0 ? 1 : 0)} ${u[i]}`;
     }
     function untilHuman(iso) {
-      const ms = new Date(iso).getTime() - Date.now();
-      if (ms <= 0) return 'expiré';
+      const ms = new Date(iso).getTime() - Date.now(); if (ms <= 0) return 'expiré';
       const d = Math.floor(ms / 86400000), h = Math.floor((ms % 86400000) / 3600000), m = Math.floor((ms % 3600000) / 60000);
-      if (d >= 1) return `${d} j ${h} h`;
-      if (h >= 1) return `${h} h ${m} min`;
-      return `${m} min`;
+      if (d >= 1) return `${d} j ${h} h`; if (h >= 1) return `${h} h ${m} min`; return `${m} min`;
     }
     function iconFor(type = '', name = '') {
       const t = type.toLowerCase(); const ext = (name.split('.').pop() || '').toLowerCase();
@@ -106,15 +80,53 @@
       if (/zip|rar|7z|tar|gz|compressed/.test(t) || /^(zip|rar|7z|tar|gz)$/.test(ext)) return 'i-archive';
       return 'i-file';
     }
+    const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-    function renderPreview(info) {
-      const box = $('preview'); const t = (info.contentType || '').toLowerCase();
-      if (info.previewUrl && t.startsWith('image/')) { box.innerHTML = `<img alt="${info.fileName}" src="${info.previewUrl}">`; return; }
-      if (info.previewUrl && t.startsWith('video/')) { box.innerHTML = `<video controls preload="metadata" src="${info.previewUrl}"></video>`; return; }
-      if (info.previewUrl && t.startsWith('audio/')) { box.innerHTML = `<div class="filetype"><svg><use href="#i-audio"/></svg><audio controls style="margin-top:16px;width:100%" src="${info.previewUrl}"></audio></div>`; return; }
-      if (info.previewUrl && (t === 'application/pdf')) { box.innerHTML = `<iframe src="${info.previewUrl}" style="width:100%;height:340px;border:0"></iframe>`; return; }
-      const ext = (info.fileName.split('.').pop() || 'fichier').toLowerCase();
-      box.innerHTML = `<div class="filetype"><svg><use href="#${iconFor(info.contentType, info.fileName)}"/></svg><div class="ext">${ext}</div></div>`;
+    function previewHtml(file) {
+      const t = (file.contentType || '').toLowerCase();
+      if (file.previewUrl && t.startsWith('image/')) return `<img alt="${esc(file.fileName)}" src="${file.previewUrl}">`;
+      if (file.previewUrl && t.startsWith('video/')) return `<video controls preload="metadata" src="${file.previewUrl}"></video>`;
+      if (file.previewUrl && t.startsWith('audio/')) return `<div class="filetype"><svg><use href="#i-audio"/></svg><audio controls style="margin-top:16px;width:100%" src="${file.previewUrl}"></audio></div>`;
+      if (file.previewUrl && t === 'application/pdf') return `<iframe src="${file.previewUrl}" style="width:100%;height:340px;border:0"></iframe>`;
+      const ext = (file.fileName.split('.').pop() || 'fichier').toLowerCase();
+      return `<div class="filetype"><svg><use href="#${iconFor(file.contentType, file.fileName)}"/></svg><div class="ext">${esc(ext)}</div></div>`;
+    }
+
+    function statsHtml(info, totalLabel) {
+      const left = info.maxDownloads >= 1000 ? '∞' : Math.max(0, (info.maxDownloads ?? 0) - (info.downloadCount ?? 0));
+      return `<div class="stats">
+        <div class="stat"><div class="v">${totalLabel}</div><div class="k">Taille</div></div>
+        <div class="stat"><div class="v">${untilHuman(info.expiresAt)}</div><div class="k">Expire dans</div></div>
+        <div class="stat"><div class="v">${left}</div><div class="k">Téléch. restants</div></div>
+      </div>`;
+    }
+
+    function renderReady(info) {
+      const files = info.files;
+      const box = $('ready');
+      if (files.length === 1) {
+        const f = files[0];
+        box.innerHTML = `<div class="preview">${previewHtml(f)}</div>
+          <div class="dl-name">${esc(f.fileName)}</div>
+          ${statsHtml(info, humanSize(f.size))}
+          <a class="btn" href="/dl/${encodeURIComponent(id)}/0"><svg><use href="#i-download"/></svg><span>Télécharger</span></a>`;
+      } else {
+        const rows = files.map((f, i) => {
+          const isImg = f.previewUrl && (f.contentType || '').toLowerCase().startsWith('image/');
+          const thumb = isImg ? `<img alt="" src="${f.previewUrl}">` : `<svg><use href="#${iconFor(f.contentType, f.fileName)}"/></svg>`;
+          return `<div class="file-row"><div class="thumb">${thumb}</div>
+            <div class="meta"><div class="name">${esc(f.fileName)}</div><div class="sub">${humanSize(f.size)}</div></div>
+            <a class="go" href="/dl/${encodeURIComponent(id)}/${i}" aria-label="Télécharger ${esc(f.fileName)}"><svg><use href="#i-download"/></svg></a></div>`;
+        }).join('');
+        box.innerHTML = `<div class="bundle-head"><span class="t">${files.length} fichiers</span><span class="s">${humanSize(info.totalSize)}</span></div>
+          <div class="file-list">${rows}</div>
+          ${statsHtml(info, humanSize(info.totalSize))}
+          <button class="btn" id="allBtn"><svg><use href="#i-download"/></svg><span>Tout télécharger</span></button>`;
+        box.querySelector('#allBtn').addEventListener('click', () => {
+          files.forEach((_, i) => setTimeout(() => { const a = document.createElement('a'); a.href = `/dl/${encodeURIComponent(id)}/${i}`; document.body.appendChild(a); a.click(); a.remove(); }, i * 800));
+        });
+      }
+      $('loading').classList.add('hidden'); box.classList.remove('hidden');
     }
 
     function showState(icon, title, text) {
@@ -130,23 +142,13 @@
         const config = await (await fetch('/__/firebase/init.json')).json();
         const functions = getFunctions(initializeApp(config), 'us-central1');
         const { data: info } = await httpsCallable(functions, 'getTransferInfo')({ id });
-
         if (info.reason === 'not_found') return showState('i-search-off', 'Transfert introuvable', "Ce lien n'existe pas ou a été supprimé.");
         if (info.reason === 'expired') return showState('i-clock-off', 'Lien expiré', 'Ce transfert a dépassé sa date de validité.');
         if (info.reason === 'exhausted') return showState('i-ban', 'Limite atteinte', 'Ce transfert a atteint son nombre maximum de téléchargements.');
-        if (info.reason === 'pending') return showState('i-clock', 'Envoi en cours', "Le fichier n'a pas encore fini d'être téléversé. Réessayez dans un instant.");
-
-        renderPreview(info);
-        $('dlName').textContent = info.fileName;
-        $('dlSize').textContent = humanSize(info.size);
-        $('dlExpiry').textContent = untilHuman(info.expiresAt);
-        const left = Math.max(0, (info.maxDownloads ?? 0) - (info.downloadCount ?? 0));
-        $('dlLeft').textContent = info.maxDownloads >= 1000 ? '∞' : left;
-        $('dlBtn').href = '/dl/' + encodeURIComponent(id);
-        $('loading').classList.add('hidden'); $('ready').classList.remove('hidden');
+        if (info.reason === 'pending') return showState('i-clock', 'Envoi en cours', "Les fichiers n'ont pas encore fini d'être téléversés. Réessayez dans un instant.");
+        renderReady(info);
       } catch (e) {
-        console.error(e);
-        showState('i-alert', 'Une erreur est survenue', "Impossible de charger ce transfert pour le moment.");
+        console.error(e); showState('i-alert', 'Une erreur est survenue', "Impossible de charger ce transfert pour le moment.");
       }
     })();
   </script>
