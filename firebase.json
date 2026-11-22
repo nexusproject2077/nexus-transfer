@@ -4,11 +4,15 @@
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
-        "source": "/d/**",
+        "source": "/dl/**",
         "function": {
           "functionId": "downloadTransfer",
           "region": "us-central1"
         }
+      },
+      {
+        "source": "/d/**",
+        "destination": "/download.html"
       },
       {
         "source": "**",
