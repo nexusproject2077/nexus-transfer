@@ -2,18 +2,18 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Nexus Transfer — Transfert de fichiers rapide et temporaire</title>
   <meta name="description" content="Envoyez vos fichiers en un lien, chiffrés et éphémères.">
   <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%231ee6a4'/><path d='M12 6l5 6h-3v6h-4v-6H7z' fill='%2307070d'/></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%23ffffff'/><path d='M12 6l5 6h-3v6h-4v-6H7z' fill='%23080808'/></svg>">
   <link rel="stylesheet" href="/app.css">
 </head>
-<body>
+<body class="transfer-page">
 
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
-      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1ee6a4"/><stop offset="1" stop-color="#12b6ff"/></linearGradient>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff"/></linearGradient>
     </defs>
     <symbol id="i-logo" viewBox="0 0 24 24"><rect x="1.5" y="1.5" width="21" height="21" rx="6.5" fill="url(#g)"/><path d="M12 6l5.5 6.5h-3.4V18H9.9v-5.5H6.5z" fill="#07070d"/></symbol>
     <symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17.5 9.5 3.75 3.75 0 0 1 17 18z"/><path d="M12 15V9m0 0l-2.3 2.3M12 9l2.3 2.3"/></symbol>
@@ -33,6 +33,11 @@
     <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6v12M6 12h12"/></symbol>
   </svg>
 
+  <header class="topbar">
+    <a class="wordmark" href="/">Nexus Transfer</a>
+    <a class="hub-link" href="https://nexus-hubs.web.app/">Nexus Hub <span aria-hidden="true">↗</span></a>
+  </header>
+
   <main class="shell">
     <div class="brand"><svg class="logo"><use href="#i-logo"/></svg><h1>Nexus Transfer</h1></div>
 
@@ -46,7 +51,7 @@
         <div class="small">ou cliquez pour parcourir — 5 Go au total</div>
       </label>
 
-      <div id="fileList" class="file-list"></div>
+      <div id="fileList" class="file-list" role="region" aria-label="Fichiers sélectionnés" tabindex="0"></div>
 
       <div id="usage" class="usage hidden">
         <div class="head"><span class="used" id="usedLabel">0 o / 5 Go</span><span class="left" id="leftLabel">5 Go restants</span></div>
@@ -100,8 +105,9 @@
       <div id="error" class="alert err hidden"><svg><use href="#i-alert"/></svg><span id="errorMsg"></span></div>
     </div>
 
-    <p class="foot">Les fichiers sont supprimés à l'expiration. <a href="/">nexus-transfer</a></p>
+    <div class="trust" aria-label="Informations sur le transfert"><span><b>5 Go</b> par transfert</span><span><b>1 lien</b> à partager</span><span><b>7 jours</b> par défaut</span></div>
   </main>
+  <footer class="foot">Les fichiers sont supprimés à l'expiration. <a href="/">Nexus Transfer</a></footer>
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';

@@ -402,3 +402,111 @@ body {
   .stats { flex-direction: column; }
   .brand h1 { font-size: 1.3rem; }
 }
+
+/* Transfer — monochrome design, scoped to the upload screen. */
+.transfer-page {
+  color-scheme: dark;
+  --bg: #080808;
+  --surface: #111;
+  --surface-2: #191919;
+  --border: #292929;
+  --border-strong: #505050;
+  --text: #fff;
+  --text-muted: #b5b5b5;
+  --text-faint: #999;
+  --accent: #fff;
+  --accent-2: #fff;
+  --accent-soft: #232323;
+  --danger: #fff;
+  --grad: #fff;
+  --ring: 0 0 0 3px #777;
+  background: radial-gradient(ellipse at 50% 0%, #232323 0%, #080808 65%);
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 0 clamp(20px, 5vw, 72px);
+  line-height: 1.4;
+}
+.transfer-page .topbar {
+  width: 100%; max-width: 1280px; display: flex; justify-content: space-between;
+  align-items: center; padding: 24px 0; border-bottom: 1px solid var(--border);
+  font-size: .86rem; flex: 0 0 auto;
+}
+.transfer-page .topbar a { color: var(--text); text-decoration: none; }
+.transfer-page .wordmark { font-weight: 650; letter-spacing: -.025em; }
+.transfer-page .hub-link { color: var(--text-muted); }
+.transfer-page .hub-link:hover { color: #fff; }
+.transfer-page .shell { max-width: 640px; padding: 36px 0; }
+.transfer-page .brand { flex-direction: column; gap: 14px; margin-bottom: 26px; }
+.transfer-page .brand .logo { width: 56px; height: 56px; filter: none; }
+.transfer-page .brand h1 { background: none; color: #fff; font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -.065em; font-weight: 700; line-height: 1.08; }
+.transfer-page .card { padding: 32px; border-radius: 24px; box-shadow: 0 24px 70px #0007; }
+.transfer-page .tagline { margin: 0 0 24px; font-size: 1rem; }
+.transfer-page .drop { padding: 34px 16px; background: #0d0d0d; }
+.transfer-page .drop:hover, .transfer-page .drop.drag { background: #1d1d1d; border-color: #fff; }
+.transfer-page .drop .ico { color: #fff; width: 44px; height: 44px; }
+.transfer-page .drop .big { font-size: 1.12rem; }
+.transfer-page .file-list { max-height: 212px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.transfer-page .seg button[aria-pressed="true"] { color: #080808; box-shadow: none; }
+.transfer-page .btn { color: #080808; background: #fff; box-shadow: none; min-height: 52px; }
+.transfer-page .btn:hover { background: #e5e5e5; box-shadow: none; }
+.transfer-page .btn:disabled { color: #333; background: #e3e3e3; opacity: 1; filter: none; }
+.transfer-page .btn.ghost { color: #fff; background: #191919; }
+.transfer-page .switch input:checked + .track::after { background: #080808; }
+.transfer-page .usage .bar .fill.full { background: #fff; }
+.transfer-page .alert.err, .transfer-page .alert.warn { color: #fff; border-color: #777; background: #242424; }
+.transfer-page :focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.transfer-page .trust { display: flex; justify-content: space-evenly; gap: 12px; margin-top: 22px; color: var(--text-muted); font-size: .79rem; text-align: center; }
+.transfer-page .trust b { color: #fff; font-weight: 650; }
+.transfer-page .foot { width: 100%; max-width: 1280px; border-top: 1px solid var(--border); padding: 18px 0; margin: 0; flex: 0 0 auto; }
+.transfer-page .foot a { margin-left: 8px; }
+.transfer-page .card:has(.result.show) > :is(.drop, .file-list, .usage, .options, #sendBtn) { display: none !important; }
+
+@media (max-width: 768px) {
+  .transfer-page { height: 100vh; height: 100dvh; min-height: 0; padding: env(safe-area-inset-top) max(14px, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(14px, env(safe-area-inset-left)); }
+  .transfer-page .topbar { padding: 12px 0; font-size: .78rem; }
+  .transfer-page .shell { min-height: 0; flex: 1; display: flex; flex-direction: column; justify-content: center; margin: 0 auto; padding: 10px 0; }
+  .transfer-page .brand { gap: 6px; margin-bottom: 12px; flex-shrink: 0; }
+  .transfer-page .brand .logo { width: 36px; height: 36px; }
+  .transfer-page .brand h1 { font-size: clamp(1.6rem, 6vw, 2rem); }
+  .transfer-page .card { display: flex; flex-direction: column; min-height: 0; padding: 16px; border-radius: 18px; overflow-y: auto; overscroll-behavior: contain; }
+  .transfer-page .card > * { flex-shrink: 0; }
+  .transfer-page .tagline { font-size: .82rem; margin: 0 0 12px; }
+  .transfer-page .drop { padding: 17px 10px; }
+  .transfer-page .drop .ico { width: 28px; height: 28px; margin-bottom: 4px; }
+  .transfer-page .drop .big { font-size: .91rem; }
+  .transfer-page .drop .small { font-size: .76rem; margin-top: 2px; }
+  .transfer-page .card:has(.file-row) .drop { padding: 8px; }
+  .transfer-page .card:has(.file-row) .drop .ico { display: none; }
+  .transfer-page .file-list { flex-shrink: 1; min-height: 45px; max-height: min(112px, 16dvh); gap: 5px; margin-top: 8px; }
+  .transfer-page .file-row { gap: 8px; padding: 6px 8px; border-radius: 9px; }
+  .transfer-page .file-row .thumb { width: 30px; height: 30px; flex-basis: 30px; border-radius: 6px; }
+  .transfer-page .file-row .thumb svg { width: 17px; height: 17px; }
+  .transfer-page .file-row .name { font-size: .78rem; }
+  .transfer-page .file-row .sub { font-size: .68rem; margin: 0; }
+  .transfer-page .usage { margin-top: 8px; }
+  .transfer-page .usage .head { font-size: .7rem; margin-bottom: 4px; }
+  .transfer-page .usage .bar { height: 5px; }
+  .transfer-page .options { grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+  .transfer-page .field { min-width: 0; }
+  .transfer-page .field > label { font-size: .68rem; margin-bottom: 4px; }
+  .transfer-page .seg { gap: 2px; padding: 3px; border-radius: 8px; }
+  .transfer-page .seg button { padding: 8px 1px; font-size: .67rem; white-space: nowrap; }
+  .transfer-page .toggle { grid-column: 1 / -1; padding: 6px 8px; gap: 7px; }
+  .transfer-page .toggle .txt b { font-size: .76rem; }
+  .transfer-page .toggle .txt span { font-size: .66rem; margin: 0; }
+  .transfer-page .btn { min-height: 44px; padding: 10px; border-radius: 11px; font-size: .9rem; }
+  .transfer-page .mt, .transfer-page .progress, .transfer-page .result, .transfer-page .alert { margin-top: 10px; }
+  .transfer-page .alert { padding: 8px; font-size: .75rem; }
+  .transfer-page .trust { flex-shrink: 0; gap: 6px; margin-top: 12px; font-size: .66rem; }
+  .transfer-page .foot { padding: 10px 0; font-size: .66rem; }
+  .transfer-page .foot a { margin-left: 3px; }
+}
+
+@media (max-width: 768px) and (max-height: 650px) {
+  .transfer-page .brand { flex-direction: row; margin-bottom: 8px; }
+  .transfer-page .brand .logo { width: 27px; height: 27px; }
+  .transfer-page .card { padding: 11px; }
+  .transfer-page .tagline { margin-bottom: 8px; }
+  .transfer-page .trust { margin-top: 7px; }
+  .transfer-page .file-list { max-height: 85px; }
+}
